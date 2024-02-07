@@ -7,7 +7,7 @@ use gtk::{prelude::*, Application, CssProvider, StyleContext};
 use crate::{cli::Args, hypr, types::HyprWin, utils};
 
 //FIX: dont use clone here
-fn calculate_geometry(window: &HyprWin, args: Args, reseverd: &(i32 , i32)) -> (i32, i32) {
+fn calculate_geometry(window: &HyprWin, args: Args, reseverd: &(i32, i32)) -> (i32, i32) {
     // TODO: this doesn't work properly with stacked windows
 
     let rel_x = window.size.0 / 2 + args.label_margin_x.unwrap() - reseverd.0;
@@ -16,16 +16,19 @@ fn calculate_geometry(window: &HyprWin, args: Args, reseverd: &(i32 , i32)) -> (
     (rel_x + window.at.0, window.at.1 + rel_y)
 }
 
+fn switch_window(win_add: &Address) {
+    Dispatch::call(DispatchType::FocusWindow(WindowIdentifier::Address(
+        win_add.clone(),
+    )))
+    .expect("failed to focus window");
+}
+
 fn handle_keypress(key_to_con_id: &HashMap<char, Address>, keyval: &str) {
     if keyval.len() == 1 {
         // we can unwrap because the keyval has one character
         let c = keyval.chars().next().unwrap();
         if c.is_alphabetic() && c.is_lowercase() {
-            let win_add = key_to_con_id[&c].clone();
-            Dispatch::call(DispatchType::FocusWindow(WindowIdentifier::Address(
-                win_add,
-            )))
-            .expect("failed to focus window");
+            switch_window(&key_to_con_id[&c]);
         }
     }
 }
@@ -50,7 +53,7 @@ fn build_ui(app: &Application, args: Args) {
     gtk_layer_shell::set_layer(&app_win, gtk_layer_shell::Layer::Overlay);
 
     // receive keyboard events from the compositor
-    gtk_layer_shell::set_keyboard_mode(&app_win, gtk_layer_shell::KeyboardMode::Exclusive);
+    gtk_layer_shell::set_keyboard_mode(&app_win, gtk_layer_shell::KeyboardMode::OnDemand);
 
     // take up the full screen
     gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Top, true);
