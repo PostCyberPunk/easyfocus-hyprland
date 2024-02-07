@@ -8,6 +8,8 @@ use figment::{
     Figment,
 };
 mod cli;
+mod hypr;
+mod types;
 
 fn parse_config() -> Arc<Args> {
     // there is probably a way better way to do this...
@@ -39,7 +41,7 @@ fn parse_config() -> Arc<Args> {
 
 fn main() {
     let args = parse_config();
-
+    hypr::my_func();
     // let conn = Arc::new(Mutex::new(sway::acquire_connection()));
     // ui::run_ui(conn, args);
 }
