@@ -1,5 +1,4 @@
 use clap::Parser;
-use std::sync::{Arc, Mutex};
 use std::{env, fs, path::PathBuf};
 
 use cli::Args;
@@ -13,7 +12,7 @@ mod ui;
 mod types;
 mod utils;
 
-fn parse_config() -> Arc<Args> {
+fn parse_config() -> Args {
     // there is probably a way better way to do this...
     let mut args = Args::default();
 
@@ -38,7 +37,7 @@ fn parse_config() -> Arc<Args> {
     let cli_args = Args::parse();
     args.merge(&cli_args);
 
-    Arc::new(args)
+    args
 }
 
 fn main() {

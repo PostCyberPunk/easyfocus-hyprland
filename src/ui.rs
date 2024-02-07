@@ -1,14 +1,13 @@
 use hyprland::dispatch::*;
 use hyprland::shared::Address;
 use std::collections::HashMap;
-use std::sync::Arc;
 
 use gtk::{prelude::*, Application, CssProvider, StyleContext};
 
-use crate::{cli::Args,hypr, types::HyprWin, utils};
+use crate::{cli::Args, hypr, types::HyprWin, utils};
 
 //FIX: dont use clone here
-fn calculate_geometry(window: &HyprWin,args: Arc<Args>) -> (i32, i32) {
+fn calculate_geometry(window: &HyprWin, args: Args) -> (i32, i32) {
     // TODO: this doesn't work properly with stacked windows
 
     let rel_x = window.size.0 / 2 + args.label_margin_x.unwrap();
@@ -17,18 +16,21 @@ fn calculate_geometry(window: &HyprWin,args: Arc<Args>) -> (i32, i32) {
     (rel_x + window.at.0, window.at.0 + rel_y)
 }
 
-fn handle_keypress(key_to_con_id: &HashMap<char,Address>, keyval: &str) {
+fn handle_keypress(key_to_con_id: &HashMap<char, Address>, keyval: &str) {
     if keyval.len() == 1 {
         // we can unwrap because the keyval has one character
         let c = keyval.chars().next().unwrap();
         if c.is_alphabetic() && c.is_lowercase() {
             let win_add = key_to_con_id[&c].clone();
-            Dispatch::call(DispatchType::FocusWindow(WindowIdentifier::Address(win_add))).expect("failed to focus window");
+            Dispatch::call(DispatchType::FocusWindow(WindowIdentifier::Address(
+                win_add,
+            )))
+            .expect("failed to focus window");
         }
     }
 }
 
-fn build_ui(app: &Application, args: Arc<Args>) {
+fn build_ui(app: &Application, args: Args) {
     // get windows from hyprland
     let windows = hypr::get_win_workspace();
     // exit if no windows open
@@ -38,7 +40,6 @@ fn build_ui(app: &Application, args: Arc<Args>) {
 
     let letters = args.chars.clone().expect("Some characters are required");
     let mut chars = letters.chars();
-
 
     let app_win = gtk::ApplicationWindow::new(app);
 
@@ -61,7 +62,7 @@ fn build_ui(app: &Application, args: Arc<Args>) {
     let mut key_to_con_id = HashMap::new();
 
     windows.iter().enumerate().for_each(|(_idx, win)| {
-        let (x, y) = calculate_geometry(win,args.clone());
+        let (x, y) = calculate_geometry(win, args.clone());
         let label = gtk::Label::new(Some(""));
         let letter = chars.next().unwrap();
         key_to_con_id.insert(letter, win.address.clone());
@@ -88,7 +89,7 @@ fn build_ui(app: &Application, args: Arc<Args>) {
     app_win.show_all();
 }
 
-fn load_css(args: Arc<Args>) {
+fn load_css(args: Args) {
     let provider = CssProvider::new();
     provider
         .load_from_data(utils::args_to_css(&args).as_bytes())
@@ -103,7 +104,7 @@ fn load_css(args: Arc<Args>) {
     );
 }
 
-pub fn run_ui(args: Arc<Args>) {
+pub fn run_ui(args: Args) {
     let app = Application::builder()
         .application_id("com.github.edzdez.sway-easyfocus")
         .build();
