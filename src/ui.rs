@@ -7,13 +7,13 @@ use gtk::{prelude::*, Application, CssProvider, StyleContext};
 use crate::{cli::Args, hypr, types::HyprWin, utils};
 
 //FIX: dont use clone here
-fn calculate_geometry(window: &HyprWin, args: Args) -> (i32, i32) {
+fn calculate_geometry(window: &HyprWin, args: Args,reseverd: &(i32,i32)) -> (i32, i32) {
     // TODO: this doesn't work properly with stacked windows
 
-    let rel_x = window.size.0 / 2 + args.label_margin_x.unwrap();
-    let rel_y = args.label_margin_y.unwrap();
+    let rel_x = window.size.0 / 2 + args.label_margin_x.unwrap() - reseverd.0;
+    let rel_y = args.label_margin_y.unwrap() - reseverd.1;
 
-    (rel_x + window.at.0, window.at.0 + rel_y)
+    (rel_x + window.at.0, window.at.1 + rel_y)
 }
 
 fn handle_keypress(key_to_con_id: &HashMap<char, Address>, keyval: &str) {
@@ -37,7 +37,7 @@ fn build_ui(app: &Application, args: Args) {
     if windows.is_empty() {
         panic!("No windows open");
     }
-
+    let reserved = hypr::get_reseverd();
     let letters = args.chars.clone().expect("Some characters are required");
     let mut chars = letters.chars();
 

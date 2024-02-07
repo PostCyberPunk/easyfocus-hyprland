@@ -1,6 +1,6 @@
 use super::types::HyprWin;
 #[allow(unused_imports)]
-use hyprland::data::{Client, Clients, Monitors, Workspace};
+use hyprland::data::{Client, Clients, Monitor, Workspace};
 use hyprland::prelude::*;
 
 pub fn get_win_workspace() -> Vec<HyprWin> {
@@ -21,6 +21,11 @@ pub fn get_win_workspace() -> Vec<HyprWin> {
         .collect();
     wins
 }
-pub fn my_func() {
-    println!("{:?}", get_win_workspace());
+pub fn get_reseverd() -> (i32, i32) {
+    let m = Monitor::get_active().expect("cant find monitor?").reserved;
+    (m.0 as i32, m.1 as i32)
 }
+
+// pub fn my_func() {
+//     println!("{:?}", get_win_workspace());
+// }
