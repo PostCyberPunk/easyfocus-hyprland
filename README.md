@@ -33,6 +33,7 @@ font_size: medium
 
 label_padding_x: 4
 label_padding_y: 0
+label_border_radius:4
 label_margin_x: 4
 label_margin_y: 2
 ```
@@ -42,6 +43,6 @@ label_margin_y: 2
 3. ( ) Better support for floating windows
 4. ( ) add env support
 5. ( ) pick across workspaces
-6. ( ) more style
+6. ( ) use css instead of yaml
 7. ( ) group window support
 8. ( ) swap window support
