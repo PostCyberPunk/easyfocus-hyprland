@@ -12,8 +12,8 @@ cargo intall --path easyfocus-hyprland
 bind = $mainMod, P ,exec,easyfocus-hyprland
 ```
 ### Configuration
-config file is located at $Home/.config/easyfocus-hyprland/config.toml
-```toml
+config file is located at $HOME/.config/easyfocus-hyprland/config.yaml
+```yaml
 chars: 'fjghdkslaemuvitywoqpcbnxz'
 
 window_background_color: '1d1f21'
