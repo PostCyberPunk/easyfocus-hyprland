@@ -61,6 +61,10 @@ pub struct Args {
     #[arg(long)]
     pub label_padding_y: Option<i32>,
 
+    /// set the boreder radius <px>
+    #[arg(long)]
+    pub label_border_radius: Option<i32>,
+
     /// set the label margin-x <px>
     #[arg(long)]
     pub label_margin_x: Option<i32>,
@@ -112,6 +116,9 @@ impl Args {
         if other.label_padding_y.is_some() {
             self.label_padding_y = other.label_padding_y;
         }
+        if other.label_border_radius.is_some() {
+            self.label_border_radius = other.label_border_radius;
+        }
         if other.label_margin_x.is_some() {
             self.label_margin_x = other.label_margin_x;
         }
@@ -138,6 +145,7 @@ impl Default for Args {
             font_size: Some("medium".to_string()),
             label_padding_x: Some(4),
             label_padding_y: Some(0),
+            label_border_radius: Some(4),
             label_margin_x: Some(4),
             label_margin_y: Some(2),
         }

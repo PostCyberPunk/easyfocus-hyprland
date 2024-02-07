@@ -53,6 +53,7 @@ pub fn args_to_css(args: &Args) -> String {
             font-weight: {};
             font-size: {};
             padding: {}px {}px;
+            border-radius: {}px;
         }}
 
         .focused {{
@@ -76,6 +77,7 @@ pub fn args_to_css(args: &Args) -> String {
         args.font_size.as_ref().unwrap(),
         args.label_padding_y.unwrap(),
         args.label_padding_x.unwrap(),
+        args.label_border_radius.unwrap(),
         focused_bg.r,
         focused_bg.g,
         focused_bg.b,
