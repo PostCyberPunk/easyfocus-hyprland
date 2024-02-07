@@ -45,6 +45,7 @@ fn build_ui(app: &Application, args: Args) {
 
     // before the window is first realized, set it up to be a layer surface
     gtk_layer_shell::init_for_window(&app_win);
+    // app_win.set_title("easyfocus");
     // display it above normal windows
     gtk_layer_shell::set_layer(&app_win, gtk_layer_shell::Layer::Overlay);
 
@@ -56,13 +57,12 @@ fn build_ui(app: &Application, args: Args) {
     gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Bottom, true);
     gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Left, true);
     gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Right, true);
-
     let fixed = gtk::Fixed::new();
     // map keys to window Ids
     let mut key_to_con_id = HashMap::new();
 
-    windows.iter().enumerate().for_each(|(_idx, win)| {
-        let (x, y) = calculate_geometry(win, args.clone());
+    windows.iter().for_each(|win| {
+        let (x, y) = calculate_geometry(win, args.clone(),&reserved);
         let label = gtk::Label::new(Some(""));
         let letter = chars.next().unwrap();
         key_to_con_id.insert(letter, win.address.clone());
@@ -106,7 +106,7 @@ fn load_css(args: Args) {
 
 pub fn run_ui(args: Args) {
     let app = Application::builder()
-        .application_id("com.github.edzdez.sway-easyfocus")
+        .application_id("com.github.pcp.easyfocus-hyprland")
         .build();
 
     let args_clone = args.clone();
