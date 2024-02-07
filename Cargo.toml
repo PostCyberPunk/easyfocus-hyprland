@@ -1,0 +1,22 @@
+[package]
+name = "easyfocus-hyprland"
+authors = ["Postcyberpunk <buzzhoot@hotmail.com>"]
+description = "A tool to help efficiently focus windows in Hyprland inspired by sway-easyfocus."
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/PostCyberPunk/easyfocus-hyprland"
+readme = "README.md"
+keywords = ["cli", "hyprland"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+gtk = "0.17"
+gtk-layer-shell = { version = "0.6", features = ["v0_6"] }
+
+hyprland = "0.3.13"
+
+clap = { version = "4.3", features = ["derive"] }
+
+figment = { version = "0.10", features = ["yaml"] }
+serde = { version = "1.0", features = ["derive"] }
