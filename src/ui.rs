@@ -70,9 +70,9 @@ fn build_ui(app: &Application, args: Args) {
         fixed.put(&label, x, y);
 
         // Apply a CSS class to the focused window so it can be styled differently
-        // if window.focused {
-        //     label.style_context().add_class("focused");
-        // }
+        if win.focused {
+            label.style_context().add_class("focused");
+        }
     });
 
     app_win.connect_key_press_event(move |win, event| {
