@@ -10,6 +10,7 @@ use figment::{
 mod cli;
 mod hypr;
 mod types;
+mod utils;
 
 fn parse_config() -> Arc<Args> {
     // there is probably a way better way to do this...
