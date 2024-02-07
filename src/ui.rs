@@ -29,41 +29,42 @@ fn handle_keypress(key_to_con_id: &HashMap<char,Address>, keyval: &str) {
 }
 
 fn build_ui(app: &Application, args: Arc<Args>) {
-    // get windows from sway
+    // get windows from hyprland
     let windows = hypr::get_win_workspace();
-    let letters = args.chars.clone().expect("Some characters are required");
-    let mut chars = letters.chars();
-
     // exit if no windows open
     if windows.is_empty() {
         panic!("No windows open");
     }
 
-    let window = gtk::ApplicationWindow::new(app);
+    let letters = args.chars.clone().expect("Some characters are required");
+    let mut chars = letters.chars();
+
+
+    let app_win = gtk::ApplicationWindow::new(app);
 
     // before the window is first realized, set it up to be a layer surface
-    gtk_layer_shell::init_for_window(&window);
+    gtk_layer_shell::init_for_window(&app_win);
     // display it above normal windows
-    gtk_layer_shell::set_layer(&window, gtk_layer_shell::Layer::Overlay);
+    gtk_layer_shell::set_layer(&app_win, gtk_layer_shell::Layer::Overlay);
 
     // receive keyboard events from the compositor
-    gtk_layer_shell::set_keyboard_mode(&window, gtk_layer_shell::KeyboardMode::Exclusive);
+    gtk_layer_shell::set_keyboard_mode(&app_win, gtk_layer_shell::KeyboardMode::Exclusive);
 
     // take up the full screen
-    gtk_layer_shell::set_anchor(&window, gtk_layer_shell::Edge::Top, true);
-    gtk_layer_shell::set_anchor(&window, gtk_layer_shell::Edge::Bottom, true);
-    gtk_layer_shell::set_anchor(&window, gtk_layer_shell::Edge::Left, true);
-    gtk_layer_shell::set_anchor(&window, gtk_layer_shell::Edge::Right, true);
+    gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Top, true);
+    gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Bottom, true);
+    gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Left, true);
+    gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Right, true);
 
     let fixed = gtk::Fixed::new();
     // map keys to window Ids
     let mut key_to_con_id = HashMap::new();
 
-    windows.iter().enumerate().for_each(|(_idx, window)| {
-        let (x, y) = calculate_geometry(window,args.clone());
+    windows.iter().enumerate().for_each(|(_idx, win)| {
+        let (x, y) = calculate_geometry(win,args.clone());
         let label = gtk::Label::new(Some(""));
         let letter = chars.next().unwrap();
-        key_to_con_id.insert(letter, window.address.clone());
+        key_to_con_id.insert(letter, win.address.clone());
         label.set_markup(&format!("{}", letter));
         fixed.put(&label, x, y);
 
@@ -73,18 +74,18 @@ fn build_ui(app: &Application, args: Arc<Args>) {
         // }
     });
 
-    window.connect_key_press_event(move |window, event| {
+    app_win.connect_key_press_event(move |win, event| {
         let keyval = event
             .keyval()
             .name()
             .expect("the key pressed does not have a name?");
         handle_keypress(&key_to_con_id, &keyval);
-        window.close();
+        win.close();
         Inhibit(false)
     });
 
-    window.add(&fixed);
-    window.show_all();
+    app_win.add(&fixed);
+    app_win.show_all();
 }
 
 fn load_css(args: Arc<Args>) {
