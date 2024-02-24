@@ -7,7 +7,7 @@ use gtk::{prelude::*, Application, CssProvider, StyleContext};
 use crate::{cli::Args, hypr, types::HyprWin, utils};
 
 //FIX: dont use clone here
-fn calculate_geometry(window: &HyprWin, args: Args, reseverd: &(i32 , i32)) -> (i32, i32) {
+fn calculate_geometry(window: &HyprWin, args: Args, reseverd: &(i32, i32)) -> (i32, i32) {
     // TODO: this doesn't work properly with stacked windows
 
     let rel_x = window.size.0 / 2 + args.label_margin_x.unwrap() - reseverd.0;
