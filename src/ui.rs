@@ -53,7 +53,7 @@ fn build_ui(app: &Application, args: Args) {
     gtk_layer_shell::set_layer(&app_win, gtk_layer_shell::Layer::Overlay);
 
     // receive keyboard events from the compositor
-    gtk_layer_shell::set_keyboard_mode(&app_win, gtk_layer_shell::KeyboardMode::Exclusive);
+    gtk_layer_shell::set_keyboard_mode(&app_win, gtk_layer_shell::KeyboardMode::OnDemand);
 
     // take up the full screen
     gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Top, true);
