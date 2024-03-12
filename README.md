@@ -1,4 +1,6 @@
 # easyfocus-hyprland
+![easyfocus](https://github.com/PostCyberPunk/easyfocus-hyprland/assets/134976996/be729913-e329-4c19-bc54-bba4cf5fb13b)
+
 a hyprland window switching helper forked from [sway-easyfocus](https://github.com/edzdez/sway-easyfocus)
 ### Installation
 ```bash
