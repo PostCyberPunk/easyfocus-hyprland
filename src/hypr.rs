@@ -13,9 +13,9 @@ pub fn get_win_workspace() -> Vec<HyprWin> {
     }
 
     let active_workspace_id = active_window.workspace.id;
-
     let wins: Vec<HyprWin> = Clients::get()
         .unwrap()
+        .into_iter()
         .filter(|w| w.workspace.id == active_workspace_id)
         .map(HyprWin::from)
         .collect();
