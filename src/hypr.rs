@@ -1,6 +1,6 @@
 use super::types::HyprWin;
 #[allow(unused_imports)]
-use hyprland::data::{Client, Clients, Monitor, Workspace};
+use hyprland::data::{Client, Clients, FullscreenMode, Monitor, Workspace};
 use hyprland::prelude::*;
 
 pub fn get_win_workspace() -> Vec<HyprWin> {
@@ -8,7 +8,7 @@ pub fn get_win_workspace() -> Vec<HyprWin> {
     let active_window = Client::get_active().unwrap().unwrap();
     //TODO: add error handling for fullscreen?
     //Check if active window is fullscreen, if so, exit
-    if active_window.fullscreen {
+    if active_window.fullscreen == FullscreenMode::Fullscreen {
         panic!("Fullscreen window detected,exit");
     }
 
