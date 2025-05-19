@@ -28,8 +28,15 @@ fn handle_keypress(key_to_con_id: &HashMap<char, Address>, keyval: &str) {
         // we can unwrap because the keyval has one character
         let c = keyval.chars().next().unwrap();
         if c.is_alphabetic() && c.is_lowercase() {
-            switch_window(&key_to_con_id[&c]);
+            if key_to_con_id.contains_key(&c) {
+                switch_window(&key_to_con_id[&c]);
+            } else {
+                panic!("no window found for key: {}", c);
+            }
         }
+    } else {
+        //TODO: handle special keys,like escape ,meh, for now just panic
+        panic!("illegal key: {}", keyval);
     }
 }
 
