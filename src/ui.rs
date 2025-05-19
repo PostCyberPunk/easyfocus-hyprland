@@ -2,7 +2,9 @@ use hyprland::dispatch::*;
 use hyprland::shared::Address;
 use std::collections::HashMap;
 
-use gtk::{prelude::*, Application, CssProvider, StyleContext};
+use gtk4::{gdk, glib};
+use gtk4::{prelude::*, Application, CssProvider, EventControllerKey};
+use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
 
 use crate::{cli::Args, hypr, types::HyprWin, utils};
 
@@ -51,33 +53,33 @@ fn build_ui(app: &Application, args: Args) {
     let letters = args.chars.clone().expect("Some characters are required");
     let mut chars = letters.chars();
 
-    let app_win = gtk::ApplicationWindow::new(app);
+    let app_win = gtk4::ApplicationWindow::new(app);
 
     // before the window is first realized, set it up to be a layer surface
-    gtk_layer_shell::init_for_window(&app_win);
+    LayerShell::init_layer_shell(&app_win);
     // app_win.set_title("easyfocus");
     // display it above normal windows
-    gtk_layer_shell::set_layer(&app_win, gtk_layer_shell::Layer::Overlay);
+    LayerShell::set_layer(&app_win, Layer::Overlay);
 
     // receive keyboard events from the compositor
-    gtk_layer_shell::set_keyboard_mode(&app_win, gtk_layer_shell::KeyboardMode::OnDemand);
+    LayerShell::set_keyboard_mode(&app_win, KeyboardMode::OnDemand);
 
     // take up the full screen
-    gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Top, true);
-    gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Bottom, true);
-    gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Left, true);
-    gtk_layer_shell::set_anchor(&app_win, gtk_layer_shell::Edge::Right, true);
-    let fixed = gtk::Fixed::new();
+    LayerShell::set_anchor(&app_win, Edge::Top, true);
+    LayerShell::set_anchor(&app_win, Edge::Bottom, true);
+    LayerShell::set_anchor(&app_win, Edge::Left, true);
+    LayerShell::set_anchor(&app_win, Edge::Right, true);
+    let fixed = gtk4::Fixed::new();
     // map keys to window Ids
     let mut key_to_con_id = HashMap::new();
 
     windows.iter().for_each(|win| {
         let (x, y) = calculate_geometry(win, args.clone(), &reserved);
-        let label = gtk::Label::new(Some(""));
+        let label = gtk4::Label::new(Some(""));
         let letter = chars.next().unwrap();
         key_to_con_id.insert(letter, win.address.clone());
         label.set_markup(&format!("{}", letter));
-        fixed.put(&label, x, y);
+        fixed.put(&label, x as f64, y as f64);
 
         // Apply a CSS class to the focused window so it can be styled differently
         if win.focused {
@@ -85,33 +87,27 @@ fn build_ui(app: &Application, args: Args) {
         }
     });
 
-    app_win.connect_key_press_event(move |win, event| {
-        let keyval = event
-            .keyval()
-            .name()
-            .expect("the key pressed does not have a name?");
+    let key_event_controller = EventControllerKey::new();
+    let win_clone = app_win.clone();
+    key_event_controller.connect_key_pressed(move |_, key, _, _| {
+        let keyval = key.name().unwrap();
         handle_keypress(&key_to_con_id, &keyval);
-        win.close();
-        Inhibit(false)
+        win_clone.close();
+        gtk4::glib::Propagation::Stop
     });
 
-    app_win.add(&fixed);
-    app_win.show_all();
-}
+    app_win.add_controller(key_event_controller);
 
-fn load_css(args: Args) {
     let provider = CssProvider::new();
-    provider
-        .load_from_data(utils::args_to_css(&args).as_bytes())
-        .expect("failed to load css");
+    let css = utils::args_to_css(&args);
+    provider.load_from_data(&css);
 
-    // Add the provider to the default screen
-    StyleContext::add_provider_for_screen(
-        // we can unwrap because there should be a default screen
-        &gtk::gdk::Screen::default().unwrap(),
-        &provider,
-        gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
-    );
+    app_win
+        .style_context()
+        .add_provider(&provider, gtk4::STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+    app_win.set_child(Some(&fixed));
+    app_win.present();
 }
 
 pub fn run_ui(args: Args) {
@@ -119,8 +115,8 @@ pub fn run_ui(args: Args) {
         .application_id("com.github.pcp.easyfocus-hyprland")
         .build();
 
-    let args_clone = args.clone();
-    app.connect_startup(move |_| load_css(args_clone.clone()));
+    // let args_clone = args.clone();
+    // app.connect_startup(move |_| load_css(args_clone.clone()));
     app.connect_activate(move |app| {
         build_ui(app, args.clone());
     });

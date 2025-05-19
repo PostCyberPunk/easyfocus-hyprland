@@ -49,8 +49,8 @@
           rust-analyzer
           #############dev
           cairo
-          gtk3
-          gtk-layer-shell
+          gtk4
+          gtk4-layer-shell
         ];
 
         env = {

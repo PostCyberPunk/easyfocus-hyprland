@@ -11,8 +11,10 @@ keywords = ["cli", "hyprland"]
 categories = ["command-line-utilities"]
 
 [dependencies]
-gtk = "0.17"
-gtk-layer-shell = { version = "0.6", features = ["v0_6"] }
+# gtk = "0.17"
+# gtk-layer-shell = { version = "0.6", features = ["v0_6"] }
+gtk4 = "0.9.6"
+gtk4-layer-shell = "0.5.0"
 
 hyprland = "0.4.0-beta.2"
 
