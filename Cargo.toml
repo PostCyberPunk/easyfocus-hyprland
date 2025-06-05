@@ -2,7 +2,7 @@
 name = "easyfocus-hyprland"
 authors = ["Postcyberpunk <buzzhoot@hotmail.com>"]
 description = "A tool to help efficiently focus windows in Hyprland inspired by sway-easyfocus."
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/PostCyberPunk/easyfocus-hyprland"
